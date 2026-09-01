@@ -3,43 +3,48 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
+#include "comandos.h"
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("Uso del editor: editor <nombre_archivo>\n");
-        return 1;
-    }
-    const char *nombreArchivo=argv[1];
-    int fd=open(nombreArchivo,  O_CREAT | O_RDWR , 0644);
+int main(void) {
+    char comando[20];
+    char nombreArchivo[100];
 
-    if(fd==-1){
-        printf("Error al abrir el archivo");
-        return 1;
-    }
+    printf("Bienvenido al editor de texto\n");
+    printf("Ayuda comandos:h\n");
     
-    int size=100000;
-    char *palabra=malloc(size);
-    int terminador=0;
-    char buffer[100000]="";
-
-
     while(true){
-        // %s guarda cadena de caracteres, hasta encontrar un espacio o salto de línea
-        palabra=fgets(palabra, size, stdin);
-        //leer un numero por consola
-        scanf("%d", &terminador); // %d guarda un entero
-        //suma los caracteres de palabra y los acumula en buffer
-        strcat(buffer, palabra);
-        getchar(); // Limpiar el enter que queda después de leer el número
-        if(terminador==2){
+        scanf(" %19s", comando);
+
+        // --------- Crear archivo de texto ---------
+        if(strcmp(comando,"o")==0){ //strcmp()==0 porque strcmp devuelve 0 si las cadenas son iguales
+            char enter= getchar(); 
+            if(enter=='\n'){
+                printf("Ingrese el nombre del archivo: ");
+                scanf("%s", nombreArchivo);
+                crearArchivo(nombreArchivo);
+
+            }else{
+                scanf("%s", nombreArchivo);
+                getchar();
+                crearArchivo(nombreArchivo);
+            }
+        }
+        // --------- Salir del editor ---------
+        else if(strcmp(comando,"s")==0){
             break;
         }
+        // --------- Ayuda comandos ---------
+        else if(strcmp(comando,"h")==0){
+            printf("Uso del editor: o <nombre_archivo>\n");
+            printf("Uso del editor: otra funcion\n");
+            printf("Salir: s \n");
+        }
+        // --------- Comando no reconocido ---------
+        else{
+            printf("Comando no reconocido. Presiona 'h' para ayuda.\n");
+        }  
     }
-    //lee el texto acumulado en buffer y lo escribe en el archivo
-    write(fd, buffer, strlen(buffer));
-    
-    // Cerrar el archivo
-    close(fd);
-    free(palabra);
+
+
     return 0;
 }
