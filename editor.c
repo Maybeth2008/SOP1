@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     const char *nombreArchivo=argv[1];
-    int fd=open(nombreArchivo,  O_CREAT | O_WRONLY , 0644);
+    int fd=open(nombreArchivo,  O_CREAT | O_RDWR , 0644);
 
     if(fd==-1){
         printf("Error al abrir el archivo");
